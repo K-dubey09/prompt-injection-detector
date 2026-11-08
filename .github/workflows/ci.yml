@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    name: Tests (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # 3.9 reached end-of-life in Oct 2025 and recent fastapi/pytest builds
+        # are dropping it; test on the supported versions only.
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install package + all extras
+        run: pip install -e .[api,ml,dev]
+      - name: Run test suites
+        run: |
+          python tests/test_detector.py
+          python tests/test_features.py
+          python tests/test_defense.py
+          python tests/test_ml.py
+          python tests/test_api.py
+
+  docker:
+    name: Docker image builds
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build image
+        run: docker build -t promptguard:ci .
+      - name: Smoke test (server starts + /health responds)
+        run: |
+          docker run -d --name pg-ci -p 8019:8000 promptguard:ci
+          # Retry for up to ~30s so a slow first-start on the runner can't
+          # make this step flake. Dump container logs on failure for debug.
+          ok=0
+          for i in $(seq 1 15); do
+            if curl -sf http://localhost:8019/health; then ok=1; break; fi
+            sleep 2
+          done
+          if [ "$ok" != "1" ]; then
+            echo "::error::server did not become healthy in time"
+            docker logs pg-ci
+            docker rm -f pg-ci
+            exit 1
+          fi
+          echo
+          docker rm -f pg-ci
