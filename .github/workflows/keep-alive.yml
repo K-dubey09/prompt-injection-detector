@@ -13,8 +13,8 @@
 name: keep-alive
 
 on:
-  schedule:
-    - cron: '*/12 * * * *'   # every 12 minutes
+  #schedule:
+   # - cron: '*/12 * * * *'   # every 12 minutes
   workflow_dispatch:          # allow manual runs from the Actions tab
 
 permissions:
