@@ -1,0 +1,87 @@
+{
+  "threshold_calibrated_on": "validation",
+  "calibrated_threshold": 64,
+  "threshold_rationale": "max-margin midpoint of validation separating range [44, 83] (0-FP & 0-FN on validation)",
+  "validation": {
+    "n": 62,
+    "benign_composite_min_max": [
+      0,
+      43
+    ],
+    "malicious_composite_min_max": [
+      83,
+      100
+    ],
+    "separation_gap": 40,
+    "composite_metrics_at_threshold": {
+      "TN": 24,
+      "FP": 0,
+      "FN": 0,
+      "TP": 38,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "fpr": 0.0,
+      "fnr": 0.0,
+      "balanced_accuracy": 1.0
+    }
+  },
+  "test": {
+    "n": 62,
+    "per_layer_at_threshold": {
+      "heuristic": {
+        "TN": 24,
+        "FP": 0,
+        "FN": 35,
+        "TP": 3,
+        "precision": 1.0,
+        "recall": 0.0789,
+        "f1": 0.1463,
+        "fpr": 0.0,
+        "fnr": 0.9211,
+        "balanced_accuracy": 0.5395
+      },
+      "stat": {
+        "TN": 24,
+        "FP": 0,
+        "FN": 38,
+        "TP": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "fpr": 0.0,
+        "fnr": 1.0,
+        "balanced_accuracy": 0.5
+      },
+      "ml": {
+        "TN": 24,
+        "FP": 0,
+        "FN": 0,
+        "TP": 38,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "fpr": 0.0,
+        "fnr": 0.0,
+        "balanced_accuracy": 1.0
+      },
+      "score": {
+        "TN": 24,
+        "FP": 0,
+        "FN": 0,
+        "TP": 38,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "fpr": 0.0,
+        "fnr": 0.0,
+        "balanced_accuracy": 1.0
+      }
+    }
+  },
+  "artifacts": {
+    "scored_validation_csv": "scripts/_calibration_out/scored_validation.csv",
+    "scored_test_csv": "scripts/_calibration_out/scored_test.csv",
+    "sweep_csv": "scripts/_calibration_out/threshold_sweep_validation.csv"
+  }
+}

@@ -1,0 +1,29 @@
+# Build artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+build/
+dist/
+
+# VCS / env
+.git/
+.gitignore
+.venv/
+venv/
+.pytest_cache/
+.tox/
+.coverage
+htmlcov/
+
+# Tooling not needed in the image
+.github/
+tests/
+examples/
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Keep README.md (pyproject references it).
+*.md
+!README.md

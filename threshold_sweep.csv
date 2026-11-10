@@ -1,0 +1,4 @@
+threshold,TN,FP,FN,TP,precision,recall,f1,false_positive_rate,false_negative_rate,balanced_accuracy
+50.0,24,0,0,38,1.0,1.0,1.0,0.0,0.0,1.0
+52.0,24,0,0,38,1.0,1.0,1.0,0.0,0.0,1.0
+54.0,24,0,0,38,1.0,1.0,1.0,0.0,0.0,1.0

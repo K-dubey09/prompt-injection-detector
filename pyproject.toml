@@ -1,0 +1,79 @@
+[build-system]
+requires = ["setuptools>=84.2.1"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "promptguard"
+version = "0.5.5"
+description = "Prompt-injection detection & defense toolkit for LLMs. Heuristics + statistical anomaly scoring + a trained scikit-learn classifier, plus active defenses. Ships as a library, a multi-command CLI (--web server), and a REST API."
+readme = "README.md"
+license = {text = "MIT"}
+authors = [{name = "Kushagra Dubey", email = "kushagra.23b1531207@abes.ac.in"}]
+requires-python = ">=3.9"
+keywords = [
+    "prompt-injection",
+    "llm-security",
+    "ai-safety",
+    "adversarial-ml",
+    "machine-learning",
+    "owasp-llm",
+    "instruction-hierarchy",
+    "security",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "License :: OSI Approved :: MIT License",
+    "Framework :: FastAPI",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Security",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+[project.optional-dependencies]
+# Trained TF-IDF + LogisticRegression classifier (loads the bundled model artifact).
+ml = ["scikit-learn>=1.5,<2", "numpy>=1.26,<3", "joblib>=1.6.0"]
+# FastAPI REST API + web UI + Pydantic schemas.
+api = ["fastapi>=0.115", "uvicorn>=0.34", "pydantic>=2.9"]
+# Everything (recommended for deployment).
+all = ["scikit-learn>=1.5,<2", "numpy>=1.26,<3", "joblib>=1.6.0", "fastapi>=0.115", "uvicorn>=0.34", "pydantic>=2.9"]
+# Test/dev tooling.
+dev = ["pytest>=9.0", "httpx>=0.28.1"]
+
+[project.scripts]
+promptguard = "promptguard.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/K-dubey09/prompt-injection-detector"
+Documentation = "https://github.com/K-dubey09/prompt-injection-detector#readme"
+Issues = "https://github.com/K-dubey09/prompt-injection-detector/issues"
+Changelog = "https://github.com/K-dubey09/prompt-injection-detector/blob/main/CHANGELOG.md"
+
+[tool.setuptools]
+packages = ["promptguard"]
+
+[tool.setuptools.package-data]
+# Ship the trained model artifact and the canonical evaluation dataset (CSV)
+# inside the wheel/sdist. The CSV is the source of truth for retraining,
+# threshold calibration, per-layer evaluation, and porting the corpus into an
+# external (e.g. Kaggle) training workflow.
+promptguard = ["data/*.joblib", "data/*.csv"]
+
+# ── Lint / test config (no runtime cost; dev tooling only) ────────────────
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+extend-exclude = ["examples"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W"]
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

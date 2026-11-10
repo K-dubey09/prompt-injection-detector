@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PromptGuard — Prompt Injection Detector &amp; Defense</title>
+  <meta name="description" content="A transparent prompt-injection detection and defense toolkit for LLMs. Heuristics + statistical anomaly scoring + active defenses." />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">🛡️</span>
+      <div>
+        <h1>PromptGuard</h1>
+        <p class="tagline">Prompt-injection detection &amp; defense for LLMs</p>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <span id="version-badge" class="badge ghost">v—</span>
+      <a class="badge ghost" href="/docs" target="_blank" rel="noopener">API docs ↗</a>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab active" data-tab="analyze">Analyze</button>
+    <button class="tab" data-tab="defend">Defend</button>
+    <button class="tab" data-tab="sanitize">Sanitize</button>
+  </nav>
+
+  <main>
+    <!-- ===================== ANALYZE ===================== -->
+    <section id="tab-analyze" class="panel active">
+      <div class="layout">
+        <div class="col-input">
+          <label class="field-label">Input text to analyse</label>
+          <textarea id="analyze-text" rows="10" placeholder="Paste user-supplied text, a retrieved document, or a chat message…"></textarea>
+          <div class="row">
+            <button id="analyze-btn" class="btn primary">Analyze</button>
+            <button id="analyze-clear" class="btn ghost">Clear</button>
+          </div>
+          <div class="samples">
+            <span class="muted">Try:</span>
+            <button class="chip" data-sample="inj1">Instruction override</button>
+            <button class="chip" data-sample="inj2">Control-token injection</button>
+            <button class="chip" data-sample="inj3">Base64 payload</button>
+            <button class="chip" data-sample="benign">Benign request</button>
+          </div>
+        </div>
+        <div class="col-result">
+          <div id="analyze-empty" class="empty">Run an analysis to see the risk score, matched signals and statistical features.</div>
+          <div id="analyze-result" class="hidden">
+            <div class="gauge-card">
+              <svg class="gauge" viewBox="0 0 120 120" width="140" height="140">
+                <circle class="gauge-bg" cx="60" cy="60" r="52"></circle>
+                <circle id="gauge-fg" class="gauge-fg" cx="60" cy="60" r="52"
+                        stroke-dasharray="326.7" stroke-dashoffset="326.7"></circle>
+              </svg>
+              <div class="gauge-text">
+                <span id="gauge-score" class="gauge-num">0</span>
+                <span class="gauge-unit">/100</span>
+                <span id="gauge-level" class="gauge-level">LOW</span>
+              </div>
+            </div>
+            <div id="injection-banner" class="banner"></div>
+            <div class="scorebars">
+              <div class="scorebar">
+                <div class="scorebar-label"><span>Heuristic</span><span id="heur-val">0</span></div>
+                <div class="bar"><div id="heur-bar" class="bar-fill"></div></div>
+              </div>
+              <div class="scorebar">
+                <div class="scorebar-label"><span>Statistical</span><span id="stat-val">0</span></div>
+                <div class="bar"><div id="stat-bar" class="bar-fill"></div></div>
+              </div>
+              <div class="scorebar">
+                <div class="scorebar-label"><span>ML classifier</span><span id="ml-val">0</span></div>
+                <div class="bar"><div id="ml-bar" class="bar-fill"></div></div>
+              </div>
+            </div>
+            <h3>Matched signals</h3>
+            <div id="matched-list" class="signal-list"></div>
+            <h3>Statistical features</h3>
+            <div id="features-grid" class="features-grid"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== DEFEND ===================== -->
+    <section id="tab-defend" class="panel hidden">
+      <div class="layout stacked">
+        <div class="col-input">
+          <label class="field-label">Legitimate system prompt</label>
+          <textarea id="defend-system" rows="3" placeholder="e.g. You are a customer-support assistant that answers questions about orders.">You are a helpful assistant that summarises documents for the user.</textarea>
+          <label class="field-label">Untrusted user / third-party input</label>
+          <textarea id="defend-user" rows="6" placeholder="e.g. a retrieved web page or chat message…"></textarea>
+          <div class="row">
+            <button id="defend-btn" class="btn primary">Build hardened prompt</button>
+            <button class="chip" data-fill="defend">Load example</button>
+          </div>
+        </div>
+        <div class="col-result">
+          <div id="defend-empty" class="empty">The hardened prompt wraps untrusted input in data delimiters with an instruction-hierarchy preamble.</div>
+          <div id="defend-result" class="hidden">
+            <h3>Hardened prompt</h3>
+            <pre id="defend-prompt" class="code"></pre>
+            <h3>Notes</h3>
+            <ul id="defend-notes" class="notes"></ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== SANITIZE ===================== -->
+    <section id="tab-sanitize" class="panel hidden">
+      <div class="layout">
+        <div class="col-input">
+          <label class="field-label">Input to sanitise</label>
+          <textarea id="sanitize-text" rows="10" placeholder="Strip control tokens, base64 blobs, and unicode-escape obfuscation…"></textarea>
+          <div class="row">
+            <button id="sanitize-btn" class="btn primary">Sanitize</button>
+            <button class="chip" data-fill="sanitize">Load example</button>
+          </div>
+        </div>
+        <div class="col-result">
+          <div id="sanitize-empty" class="empty">Sanitisation strips attacker-controlled tokens before the text reaches the model.</div>
+          <div id="sanitize-result" class="hidden">
+            <h3>Actions taken</h3>
+            <ul id="sanitize-actions" class="notes"></ul>
+            <h3>Sanitised output</h3>
+            <pre id="sanitize-output" class="code"></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>PromptGuard — heuristic + statistical prompt-injection defense.</span>
+    <span class="muted">A mitigation layer, not a guarantee. See README → Limitations.</span>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
