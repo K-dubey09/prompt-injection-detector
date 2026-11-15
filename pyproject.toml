@@ -38,11 +38,11 @@ classifiers = [
 
 [project.optional-dependencies]
 # Trained TF-IDF + LogisticRegression classifier (loads the bundled model artifact).
-ml = ["scikit-learn>=1.5,<2", "numpy>=1.26,<3", "joblib>=1.6.0"]
+ml = ["scikit-learn>=1.5,<2", "numpy>=2.2.6,<3", "joblib>=1.6.0"]
 # FastAPI REST API + web UI + Pydantic schemas.
 api = ["fastapi>=0.115", "uvicorn>=0.34", "pydantic>=2.9"]
 # Everything (recommended for deployment).
-all = ["scikit-learn>=1.5,<2", "numpy>=1.26,<3", "joblib>=1.6.0", "fastapi>=0.115", "uvicorn>=0.34", "pydantic>=2.9"]
+all = ["scikit-learn>=1.5,<2", "numpy>=2.2.6,<3", "joblib>=1.6.0", "fastapi>=0.115", "uvicorn>=0.34", "pydantic>=2.9"]
 # Test/dev tooling.
 dev = ["pytest>=9.0", "httpx>=0.28.1"]
 
